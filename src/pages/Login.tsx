@@ -14,16 +14,28 @@ export default function Login({ onLogin, onRegister, onRecuperar }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    setLoading(true);
-    setError('');
-    const res = await api.post('/auth/login', { correo, password });
-    if (res.success) {
-      onLogin(res.id_usuario, res.nombre, res.rol);
-    } else {
-      setError(res.message);
-    }
-    setLoading(false);
-  };
+  setError('');
+
+  if (!correo.trim() || !password.trim()) {
+    setError('Debe ingresar correo y contraseña');
+    return;
+  }
+
+  setLoading(true);
+
+  const res = await api.post('/auth/login', { 
+    correo: correo.trim(), 
+    password 
+  });
+
+  if (res.success) {
+    onLogin(res.id_usuario, res.nombre, res.rol);
+  } else {
+    setError(res.message);
+  }
+
+  setLoading(false);
+};
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
